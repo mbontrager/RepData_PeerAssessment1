@@ -10,7 +10,6 @@ theme_set(theme_bw())
 ```
 ## Loading and preprocessing the data
 ```{r load_data}
-setwd("D:/Users/Martin/Dropbox/Classes/data_science/Reproducible_Research/PeerAssessment1/")
 unzip("activity.zip")
 inputFile <- "activity.csv"
 
@@ -26,11 +25,14 @@ attach(activityData)
 dailySteps <- aggregate(steps~date, FUN=mean)
 qplot(dailySteps[, 2], xlab = "Mean Steps", main="Mean Steps per Day", 
       binwidth = 5)
+```
 
-# Mean Steps per Day:
+#### Mean Steps per Day:
+```{r steps_per_day}
 mean(steps, na.rm = TRUE)
-
-# Median Steps per Day:
+```
+#### Median Steps per Day:
+```{r median_steps}
 median(steps, na.rm = TRUE)
 ```
 
@@ -40,18 +42,24 @@ meanSteps <- aggregate(steps~interval, FUN=mean)
 qplot(meanSteps$interval, meanSteps$steps, geom = "line", 
       xlab = "Five Minute Interval", ylab = "Number of Steps", 
       main = "Steps vs. 5-minute Interval") + geom_line(size=0.7)
+```
 
-# The interval in which the most steps were taken on average:
+#### The interval in which the most steps were taken on average:
+```{r interval_max_steps}
 meanSteps[which.max(meanSteps$steps), ][[1]]
 ```
 
 
 ## Imputing missing values
-```{r missing values}
-# How many NA values are in the dataset?
-length(which(is.na(activityData$steps)))
-imputeActivity <- activityData
+#### How many NA values are in the dataset?
 
+```{r missing values}
+length(which(is.na(activityData$steps)))
+```
+
+#### What happens when I replace missing data?
+```{r impute}
+imputeActivity <- activityData
 # Fill in missing "steps"" values with the mean value of that interval
 for (i in 1:nrow(imputeActivity)){
     if (is.na(imputeActivity[i, ]$steps)){
@@ -66,8 +74,10 @@ detach(activityData); attach(imputeActivity)
 dailySteps <- aggregate(steps~date, FUN=mean)
 qplot(dailySteps[, 2], xlab = "Mean Steps", 
       main="Mean Steps per Day (Imputed Data)", binwidth = 5)
+```
 
-# Imputed data mean
+#### Imputed data mean and median
+```{r impute_mean_med}
 mean(steps)
 median(steps)
 ```
